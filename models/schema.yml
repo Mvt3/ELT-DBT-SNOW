@@ -1,0 +1,72 @@
+models:
+    
+  - name: dim_movies
+    description: Dimensión tabla de películas
+    columns:
+      - name: movie_id
+        description: ID de la película
+      - name: movie_title
+        description: Título de la película
+      - name: genre_list
+        description: Lista de géneros
+      - name: genre
+   
+  - name: dim_users
+    description: Dimensión tabla de usuarios
+    columns:
+      - name: user_id
+        description: ID unico del usuario
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_genome_tags
+    description: Dimensión tabla de etiquetas del genoma
+    columns:
+      - name: tag_id
+        description: ID de la etiqueta
+        tests:
+          - unique
+          - not_null
+      - name: tag_name
+        description: Nombre de la etiqueta
+        tests:
+          - not_null
+
+  - name: fct_ratings
+    description: tabla de hechos de calificaciones de películas
+    columns:
+      - name: user_id
+        description: ID foranea de dim_users
+        tests:
+          - not_null
+      - name: movie_id
+        description: ID foranea de dim_movies
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_movies')
+              field: movie_id 
+              
+      - name: rating
+        description: Rating que el usuario le dio a la película
+        tests:
+          - not_null
+      - name: rating_timestamp
+        description: Timestamp de la calificación
+
+  - name: fct_genome_scores
+    description: tabla de hechos de puntuaciones del genoma
+    columns:
+      - name: movie_id
+        description: ID foranea de dim_movies
+        tests:
+          - not_null
+      - name: tag_id
+        description: ID foranea de dim_genome_tags
+        tests:
+          - not_null
+      - name: relevance_score
+        description: Relevancia de la etiqueta para la película
+        tests:
+          - not_null
